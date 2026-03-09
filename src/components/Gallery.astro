@@ -1,0 +1,116 @@
+---
+import { Image } from 'astro:assets';
+
+import CatInCoat from '../images/paintings/Cat_in_Coat.jpg';
+import ManWithAntlers from '../images/paintings/Man_with_Antlers.jpg';
+import ManWithHarmonica from '../images/paintings/Man_with_Harmonica.jpg';
+import ManWithSaxophone from '../images/paintings/Man_with_Saxophone.jpg';
+import ShrikeWithFruits from '../images/paintings/Shrike_with_Fruits.jpg';
+import ThreeHeads from '../images/paintings/Three_Heads.jpg';
+
+const paintings = [
+  { img: CatInCoat,        alt: 'A portrait of a black cat wearing a Victorian-era coat', title: 'Cat in Coat',        medium: 'Oil on canvas' },
+  { img: ManWithAntlers,   alt: 'Man with Antlers',                                       title: 'Man with Antlers',   medium: 'Acrylic on canvas' },
+  { img: ManWithHarmonica, alt: 'A man sitting down playing a harmonica',                 title: 'Man with Harmonica', medium: 'Acrylic on canvas' },
+  { img: ManWithSaxophone, alt: 'A portrait of a man playing a saxophone',                title: 'Man with Saxophone', medium: 'Acrylic on canvas' },
+  { img: ShrikeWithFruits, alt: 'A painting of a shrike in a teacup',                    title: 'Shrike with Fruits', medium: 'Oil on canvas' },
+  { img: ThreeHeads,       alt: 'A painting of three heads',                              title: 'Three Heads',        medium: 'Acrylic on canvas' },
+];
+---
+
+<div class="container mx-auto px-4 py-6 fadeInUp" id="gallery"
+  style="columns: 380px; column-gap: 16px;">
+  {paintings.map((p, i) => (
+    <figure class="image-figure mb-4 break-inside-avoid" data-index={i}>
+      <Image src={p.img} alt={p.alt} loading={i < 2 ? 'eager' : 'lazy'} />
+      <figcaption>
+        <p class="text-lg">{p.title}</p>
+        <p class="text-sm">{p.medium}</p>
+      </figcaption>
+    </figure>
+  ))}
+</div>
+
+<!-- Lightbox -->
+<div
+  id="lightbox"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Image viewer"
+  class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center flex-col"
+>
+  <button id="lb-close" aria-label="Close"
+    class="absolute top-4 right-6 text-white text-4xl leading-none hover:opacity-70 cursor-pointer">
+    &times;
+  </button>
+  <button id="lb-prev" aria-label="Previous image"
+    class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-5xl leading-none hover:opacity-70 cursor-pointer select-none">
+    &#8249;
+  </button>
+  <button id="lb-next" aria-label="Next image"
+    class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-5xl leading-none hover:opacity-70 cursor-pointer select-none">
+    &#8250;
+  </button>
+  <img id="lb-img" src="" alt="" class="max-h-[82vh] max-w-[88vw] object-contain select-none" />
+  <div class="text-center mt-4 text-white pointer-events-none">
+    <p id="lb-title" class="text-xl"></p>
+    <p id="lb-medium" class="text-sm text-gray-300"></p>
+  </div>
+  <p id="lb-counter" class="text-gray-500 text-xs mt-2 pointer-events-none"></p>
+</div>
+
+<script>
+  const paintings = [
+    { src: document.querySelectorAll<HTMLImageElement>('#gallery img')[0]?.src, title: 'Cat in Coat',        medium: 'Oil on canvas',        alt: 'A portrait of a black cat wearing a Victorian-era coat' },
+    { src: document.querySelectorAll<HTMLImageElement>('#gallery img')[1]?.src, title: 'Man with Antlers',   medium: 'Acrylic on canvas',    alt: 'Man with Antlers' },
+    { src: document.querySelectorAll<HTMLImageElement>('#gallery img')[2]?.src, title: 'Man with Harmonica', medium: 'Acrylic on canvas',    alt: 'A man sitting down playing a harmonica' },
+    { src: document.querySelectorAll<HTMLImageElement>('#gallery img')[3]?.src, title: 'Man with Saxophone', medium: 'Acrylic on canvas',    alt: 'A portrait of a man playing a saxophone' },
+    { src: document.querySelectorAll<HTMLImageElement>('#gallery img')[4]?.src, title: 'Shrike with Fruits', medium: 'Oil on canvas',        alt: 'A painting of a shrike in a teacup' },
+    { src: document.querySelectorAll<HTMLImageElement>('#gallery img')[5]?.src, title: 'Three Heads',        medium: 'Acrylic on canvas',    alt: 'A painting of three heads' },
+  ];
+
+  const lb        = document.getElementById('lightbox')!;
+  const lbImg     = document.getElementById('lb-img') as HTMLImageElement;
+  const lbTitle   = document.getElementById('lb-title')!;
+  const lbMedium  = document.getElementById('lb-medium')!;
+  const lbCounter = document.getElementById('lb-counter')!;
+  let current = 0;
+
+  function openLightbox(i: number) {
+    current = i;
+    const p = paintings[i];
+    lbImg.src = p.src;
+    lbImg.alt = p.alt;
+    lbTitle.textContent = p.title;
+    lbMedium.textContent = p.medium;
+    lbCounter.textContent = `${i + 1} / ${paintings.length}`;
+    lb.classList.remove('hidden');
+    lb.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lb.classList.add('hidden');
+    lb.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  function prev() { openLightbox((current - 1 + paintings.length) % paintings.length); }
+  function next() { openLightbox((current + 1) % paintings.length); }
+
+  document.querySelectorAll('#gallery .image-figure').forEach((fig, i) => {
+    fig.addEventListener('click', () => openLightbox(i));
+  });
+
+  document.getElementById('lb-close')!.addEventListener('click', closeLightbox);
+  document.getElementById('lb-prev')!.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+  document.getElementById('lb-next')!.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+  lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+
+  document.addEventListener('keydown', (e) => {
+    if (lb.classList.contains('hidden')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowLeft')   prev();
+    if (e.key === 'ArrowRight')  next();
+  });
+</script>
