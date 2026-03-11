@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: 'DM Sans', sans-serif;
+}
+
 /* navbar hamburger */
 @media (max-width: 767px) {
   .navicon {
@@ -24,7 +28,15 @@
   .navicon::after  { top: -5px; }
 
   .menu-btn:not(:checked) ~ .menu { display: none; }
-  .menu-btn:checked ~ .menu { display: block; }
+  .menu-btn:checked ~ .menu {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 50;
+  }
 
   .menu-btn:checked ~ .menu-icon .navicon { background: transparent; }
   .menu-btn:checked ~ .menu-icon .navicon::before { transform: rotate(-45deg); }
@@ -46,6 +58,7 @@
   transition: width 0.3s;
 }
 .navbar-nav li > a:hover::after { width: 100%; }
+.navbar-nav li > a.activelink::after { width: 100%; }
 
 .activelink {
   font-size: 1.5rem;
@@ -59,13 +72,16 @@
   cursor: pointer;
 }
 
-.image-figure img {
-  display: block;
-  width: 100%;
+.image-figure {
   transition: transform 0.2s ease;
 }
 
-.image-figure:hover img {
+.image-figure img {
+  display: block;
+  width: 100%;
+}
+
+.image-figure:hover {
   transform: scale(1.02);
 }
 

@@ -1,103 +1,62 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
-import mee from '../images/mee.jpg';
+import mee from '../images/mee2.jpeg';
 import sculpture from '../images/sculpture.jpg';
 ---
 
-<Layout title="About — Narmeen Zain" description="About Narmeen Zain — award-winning, internationally exhibited artist">
-  <div class="container mx-auto p-3 md:p-1 fadeInUp">
+<Layout title="About — Narmeen Zain" description="About Narmeen Zain, Paintings, Drawings, Art, Computer Science, Computer Scientist">
+  <div class="w-full md:w-[80%] mx-auto p-3 md:p-1 fadeInUp">
 
     <!-- portrait + bio -->
-    <div class="md:grid md:grid-cols-3 pb-20">
-      <div class="md:col-span-1 flex flex-col items-center justify-center">
-        <Image src={mee} alt="Artist portrait" class="rounded-full h-48 w-48 object-cover -scale-x-100 hover:animate-pulse" />
-      </div>
-      <div class="md:col-span-2 md:col-start-2 lg:pr-12">
-        <p class="py-2 text-2xl text-gray-600 font-bold">Hii</p>
-        <p class="pr-4">I'm an award-winning, internationally exhibited artist. I've been exhibiting since 2011 and
-        mostly paint with oils and acrylics but sometimes create mixed media pieces with embroidery or knit work.
-        I also very occasionally sculpt with ceramic clay.</p>
-        <p class="p-1">Outside of art, I'm a computer scientist and classically trained pianist.</p>
-
-        <div class="pt-7 w-3/4 xl:w-1/5">
-          <a href="mailto:nszain@pm.me"
-            class="bg-green-900 hover:bg-green-800 shadow-md hover:shadow-xl text-white font-semibold py-3 px-5 rounded-3xl grid grid-flow-col-dense hover:-translate-y-1 transition-transform"
-            id="mailcheck">
-            <div id="mailimg"></div>
-            <p class="font-medium text-lg">Say hello!</p>
-          </a>
-        </div>
-      </div>
+    <div class="flex flex-row items-center justify-around w-full pt-12">
+      <p class="md:pl-[10%] text-gray-500">Mostly an oil painter.</p>
+      <Image src={mee} alt="Artist portrait" class="rounded-full h-36 w-36 scale-x-100 hover:animate-pulse" />
     </div>
 
-    <!-- sculpture image -->
-    <Image src={sculpture} alt="Sculpture of a human head" class="rounded w-full fadeInUp" />
 
-    <!-- gallery representation -->
-    <div class="my-12 h-px border-t-0 bg-gradient-to-b from-gray-400 via-gray-700 to-transparent opacity-50"></div>
-    <div class="md:grid md:grid-cols-5">
-      <div class="md:col-span-2">
-        <p class="text-lg text-gray-800 font-bold p-2">GALLERY REPRESENTATION</p>
-      </div>
-      <div class="md:col-span-1 md:col-start-3 flex flex-col items-center justify-center">
-        <p class="pb-1 text-xl font-bold text-lime-900">DIAC</p>
-        <p class="p-1 text-base">Dubai, UAE</p>
-      </div>
-      <div class="md:col-span-1 md:col-start-4 flex flex-col items-center justify-center">
-        <p class="pb-1 text-xl font-bold text-lime-900">ISOAG</p>
-        <p class="p-1 text-base">Dubai, UAE</p>
-      </div>
-    </div>
+    <div class="flex justify-center mt-8">
+    <div class="w-full md:w-[60%] mx-auto">
 
-    <!-- about the art + artist statement -->
-    <div class="my-8 h-px border-t-0 bg-gradient-to-b from-gray-400 via-gray-700 to-transparent opacity-50"></div>
-    <div class="md:grid md:grid-cols-2">
-      <div class="md:p-1 md:col-span-1">
-        <p class="text-lg text-gray-800 font-bold p-3 underline decoration-double decoration-lime-600">ABOUT THE ART</p>
-        <p class="p-1 pr-3">I started learning to paint with acrylics but ended up gravitating towards oils for the depth and richness of colour.
-        These days, I'm experimenting more with mixed media and sculpture.</p>
-        <p class="p-1 pr-3">Above all, I value connection and emotion in my work.
-        The viewer, then, becomes vital. I am looking for acceptance and reciprocity and connection. The message doesn't exist unless it's in
-        the act of being perceived.</p>
-      </div>
-      <div class="md:col-span-1">
-        <div class="md:grid md:grid-cols-10">
-          <div class="md:col-span-1 md:h-[250px] md:min-h-[1em] md:w-px md:self-stretch bg-gradient-to-b from-transparent via-gray-700 to-transparent opacity-40"></div>
-          <div class="md:col-span-9">
-            <p class="text-lg text-gray-800 font-bold p-3 underline decoration-2 decoration-lime-600">ARTIST STATEMENT</p>
-            <p class="p-1 pr-5">I think people, places, objects, are only as obedient to their outlines as we expect them to be. There's a volatility there that I sometimes forget. Objects don't exist in isolation.
-            The links between them are hard for me to put into words but I know that we overlap more than we are separate. When I look into a mirror my face is broken into billions of others. My work relies on this enmeshment.</p>
-            <p class="p-1 pr-5">I have said before that many of my paintings begin in dreams. I am using paint and thread now to show them to you. There is something to be said that exists outside the bounds of language. I've said it as best I can.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="w-fit mx-auto">
 
     <!-- exhibitions -->
-    <div class="my-12 h-px border-t-0 bg-gradient-to-b from-gray-400 via-gray-700 to-transparent opacity-50"></div>
     <p class="text-lg text-gray-800 font-bold p-1 pb-4">SELECTED EXHIBITIONS</p>
+    <p class="p-1">2025 <b><i>Freedom</i></b>, National Academy of Art, India</p>
+    <p class="p-1">2025 <b><i>внутри</i></b>, G Gallery, Samara, Russia</p>
     <p class="p-1">2024 <b><i>Emozion</i></b>, Gadarte Associazione Culturale, Florence, Italy</p>
-    <p class="p-1">2024 <b><i>Telavi History Museum</i></b>, Telavi, Georgia</p>
+    <p class="p-1">2024 — Present, Telavi History Museum, Telavi, Georgia</p>
     <p class="p-1">2023 <b><i>ISOAG Annual Art Exhibition</i></b>, Dubai, UAE</p>
     <p class="p-1">2023 <b><i>One World One Earth</i></b>, Taj Mahal Palace Hotel, Mumbai, India</p>
     <p class="p-1">2023 <b><i>Annual Exhibition</i></b>, Rukseen Art Gallery, Dubai, United Arab Emirates</p>
-    <p class="p-1">2023 <b><i>Vasudhaiv Kutumbakam</i></b>, Indian Embassy, Abu Dhabi, United Arab Emirates</p>
+    <p class="p-1">2023 <b><i>Vasudhaiv Kutumbakam</i></b>, Embassy of India, Abu Dhabi, United Arab Emirates</p>
     <p class="p-1">2023 <b><i>A Journey Through Creativity</i></b>, Hotel H, Dubai, United Arab Emirates</p>
-    <p class="p-1">2012–2014 Permanently exhibited, ArtChowk — the Gallery, Karachi, Pakistan</p>
+    <p class="p-1">2012 – 2014, ArtChowk — the Gallery, Karachi, Pakistan</p>
     <p class="p-1">2014 <b><i>Students' Exhibition</i></b>, Gallery 76, Dubai, United Arab Emirates</p>
 
     <!-- press -->
     <div class="my-12 h-px border-t-0 bg-gradient-to-b from-gray-400 via-gray-700 to-transparent opacity-50"></div>
-    <p class="text-lg text-gray-800 font-bold p-1 pb-4">SELECTED PRESS</p>
-    <p class="p-1">2024 <b>Canvas of Artist Memories</b> Autobiography Coffee Table Book, published by Namaste India Magazine</p>
-    <p class="p-1">2023 <b>Gulf Today</b>, <i>"<a class="underline decoration-2 decoration-orange-600 hover:no-underline hover:text-orange-900 font-semibold" href="https://www.gulftoday.ae/culture/2023/09/21/the-art-of-dreams-computer-scientist-narmeen-zain-teams-with-dreams-for-art">The Art of Dreams: Computer scientist Narmeen Zain teams with dreams for art</a>"</i></p>
+    <p class="text-lg text-gray-800 font-bold p-1 pb-4">SELECTED PRESS & PUBLICATIONS</p>
+    <p class="p-1">2026 <b>Editor's Choice 2026 Calendar</b> published by Tovu Ovimaan </p>
+    <p class="p-1">2024 <b>Canvas of Artist Memories</b> coffee table book published by Namaste Magazine</p>
+
+    <p class="p-1">2023 <i>"<a class="underline decoration-2 decoration-orange-600 hover:no-underline hover:text-orange-900" 
+    href="https://www.gulftoday.ae/culture/2023/09/21/the-art-of-dreams-computer-scientist-narmeen-zain-teams-with-dreams-for-art"><b>The Art of Dreams</b>: Computer scientist Narmeen Zain teams with dreams for art"</a></i>, Gulf Today</p>
 
     <!-- distinctions -->
     <div class="my-12 h-px border-t-0 bg-gradient-to-b from-gray-400 via-gray-700 to-transparent opacity-50"></div>
     <p class="text-lg text-gray-800 font-bold p-1 pb-4">DISTINCTIONS</p>
-    <p class="p-1">2013 <b>Juror's Choice</b>, Gallery 72</p>
-    <p class="p-1 pb-16">2011 <b>First Place</b>, Gallery 72</p>
+    <p class="p-1">2013 <b>Juror's Choice</b>, Gallery 72, Dubai, United Arab Emirates</p>
+    <p class="p-1 pb-16">2011 <b>First Place</b>, Gallery 72, Dubai, United Arab Emirates</p>
+
+    </div>
+
+    </div>
+    </div>
+
+    <!-- sculpture -->
+    <Image src={sculpture} alt="Sculpture of a human head" class="rounded w-full fadeInUp" loading="lazy" />
+
 
   </div>
 </Layout>
