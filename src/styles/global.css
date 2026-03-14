@@ -119,20 +119,11 @@ body {
 }
 
 .fadeFooter {
-  animation: fadein 3s ease forwards;
+  animation: fadein 1.5s ease forwards;
 }
 @keyframes fadein {
   0%   { opacity: 0; }
-  66%  { opacity: 0; }
+  40%  { opacity: 0; }
   100% { opacity: 1; }
 }
 
-/* mail icon hover swap */
-#mailimg {
-  background-image: url('/mail.png');
-  width: 24px;
-  height: 24px;
-}
-#mailcheck:hover #mailimg {
-  background-image: url('/mailopen.png');
-}
