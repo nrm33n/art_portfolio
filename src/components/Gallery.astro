@@ -152,8 +152,11 @@ const paintings = await Promise.all([
   function prev() { openLightbox((current - 1 + paintings.length) % paintings.length); }
   function next() { openLightbox((current + 1) % paintings.length); }
 
-  document.querySelectorAll('#gallery .image-figure').forEach((fig, i) => {
-    fig.addEventListener('click', () => openLightbox(i));
+  document.getElementById('gallery')!.addEventListener('click', (e) => {
+    const fig = (e.target as Element).closest('.image-figure');
+    if (!fig) return;
+    const i = figures.indexOf(fig as HTMLElement);
+    if (i !== -1) openLightbox(i);
   });
 
   document.getElementById('lb-close')!.addEventListener('click', closeLightbox);
