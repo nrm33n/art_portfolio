@@ -81,7 +81,10 @@ const paintings = await Promise.all([
     class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-5xl leading-none hover:opacity-70 cursor-pointer select-none">
     &#8250;
   </button>
-  <img id="lb-img" src="" alt="" class="max-h-[82vh] max-w-[88vw] object-contain select-none transition-opacity duration-300" />
+  <div id="lb-spinner" class="hidden absolute inset-0 items-center justify-center pointer-events-none">
+    <div class="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+  </div>
+  <img id="lb-img" src="" alt="" class="max-h-[82vh] max-w-[88vw] object-contain select-none transition-opacity duration-300 opacity-0" />
   <div class="text-center mt-4 text-white pointer-events-none">
     <p id="lb-title" class="text-xl"></p>
     <p id="lb-medium" class="text-sm text-gray-300"></p>
@@ -100,17 +103,33 @@ const paintings = await Promise.all([
 
   const lb        = document.getElementById('lightbox')!;
   const lbImg     = document.getElementById('lb-img') as HTMLImageElement;
+  const lbSpinner = document.getElementById('lb-spinner')!;
   const lbTitle   = document.getElementById('lb-title')!;
   const lbMedium  = document.getElementById('lb-medium')!;
   const lbCounter = document.getElementById('lb-counter')!;
   let current = 0;
 
-  lbImg.addEventListener('load', () => { lbImg.style.opacity = '1'; });
+  function preload(i: number) {
+    if (i >= 0 && i < paintings.length) {
+      const img = new Image();
+      img.src = paintings[i].src;
+    }
+  }
+
+  lbImg.addEventListener('load', () => {
+    lbSpinner.classList.remove('flex');
+    lbSpinner.classList.add('hidden');
+    lbImg.style.opacity = '1';
+  });
 
   function openLightbox(i: number) {
     current = i;
     const p = paintings[i];
+    lbImg.style.transition = 'none';
     lbImg.style.opacity = '0';
+    requestAnimationFrame(() => { lbImg.style.transition = ''; });
+    lbSpinner.classList.remove('hidden');
+    lbSpinner.classList.add('flex');
     lbImg.src = p.src;
     lbImg.alt = p.alt;
     lbTitle.textContent = p.title;
@@ -119,6 +138,8 @@ const paintings = await Promise.all([
     lb.classList.remove('hidden');
     lb.classList.add('flex');
     document.body.style.overflow = 'hidden';
+    preload(i + 1);
+    preload(i - 1);
   }
 
   function closeLightbox() {
