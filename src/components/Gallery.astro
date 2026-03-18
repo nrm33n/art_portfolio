@@ -63,10 +63,6 @@ const paintings = await Promise.all([
   #lb-img {
     opacity: 0;
   }
-  #lb-img.lb-loaded {
-    opacity: 1;
-    transition: opacity 0.3s ease;
-  }
 </style>
 
 <!-- Lightbox -->
@@ -123,13 +119,17 @@ const paintings = await Promise.all([
   lbImg.addEventListener('load', () => {
     lbSpinner.classList.remove('flex');
     lbSpinner.classList.add('hidden');
-    lbImg.classList.add('lb-loaded');
+    requestAnimationFrame(() => {
+      lbImg.style.transition = 'opacity 0.3s ease';
+      lbImg.style.opacity = '1';
+    });
   });
 
   function openLightbox(i: number) {
     current = i;
     const p = paintings[i];
-    lbImg.classList.remove('lb-loaded');
+    lbImg.style.transition = 'none';
+    lbImg.style.opacity = '0';
     lbImg.removeAttribute('src');
     lbSpinner.classList.remove('hidden');
     lbSpinner.classList.add('flex');
@@ -153,9 +153,9 @@ const paintings = await Promise.all([
   function next() { openLightbox((current + 1) % paintings.length); }
 
   document.getElementById('gallery')!.addEventListener('click', (e) => {
-    const fig = (e.target as Element).closest('.image-figure');
-    if (!fig) return;
-    const i = figures.indexOf(fig as HTMLElement);
+    const fig = e.target as HTMLElement;
+    if (!fig.classList.contains('image-figure')) return;
+    const i = parseInt(fig.dataset.index ?? '-1', 10);
     if (i !== -1) openLightbox(i);
   });
 
