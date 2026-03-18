@@ -81,7 +81,7 @@ const paintings = await Promise.all([
     class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-5xl leading-none hover:opacity-70 cursor-pointer select-none">
     &#8250;
   </button>
-  <img id="lb-img" src="" alt="" class="max-h-[82vh] max-w-[88vw] object-contain select-none" />
+  <img id="lb-img" src="" alt="" class="max-h-[82vh] max-w-[88vw] object-contain select-none transition-opacity duration-300" />
   <div class="text-center mt-4 text-white pointer-events-none">
     <p id="lb-title" class="text-xl"></p>
     <p id="lb-medium" class="text-sm text-gray-300"></p>
@@ -105,9 +105,12 @@ const paintings = await Promise.all([
   const lbCounter = document.getElementById('lb-counter')!;
   let current = 0;
 
+  lbImg.addEventListener('load', () => { lbImg.style.opacity = '1'; });
+
   function openLightbox(i: number) {
     current = i;
     const p = paintings[i];
+    lbImg.style.opacity = '0';
     lbImg.src = p.src;
     lbImg.alt = p.alt;
     lbTitle.textContent = p.title;
