@@ -113,22 +113,22 @@ const paintings = await Promise.all([
   const lbCounter = document.getElementById('lb-counter')!;
   let current = 0;
 
-  // preload all images in the background
-  paintings.forEach(p => { const img = new Image(); img.src = p.src; });
+  // preload all images — keep references to prevent GC cancelling requests
+  const preloadCache = paintings.map(p => { const img = new Image(); img.src = p.src; return img; });
 
   lbImg.addEventListener('load', () => {
     lbSpinner.classList.remove('flex');
     lbSpinner.classList.add('hidden');
-    requestAnimationFrame(() => {
-      lbImg.style.transition = 'opacity 0.3s ease';
-      lbImg.style.opacity = '1';
-    });
+    lbImg.style.transition = 'opacity 0.3s ease';
+    void lbImg.offsetWidth; // force reflow so transition takes effect
+    lbImg.style.opacity = '1';
   });
 
   function openLightbox(i: number) {
     current = i;
     const p = paintings[i];
     lbImg.style.transition = 'none';
+    void lbImg.offsetWidth; // commit transition:none before changing opacity
     lbImg.style.opacity = '0';
     lbImg.removeAttribute('src');
     lbSpinner.classList.remove('hidden');
