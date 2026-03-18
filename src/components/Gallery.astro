@@ -25,7 +25,7 @@ const paintings = await Promise.all([
   { img: ManWithSaxophone, alt: 'A portrait of a man playing a saxophone',                title: 'Man with Saxophone', medium: 'acrylic on canvas, 45x60cm' },
 ].map(async p => ({
   ...p,
-  full: (await getImage({ src: p.img, width: 1600, format: 'webp', quality: 90 })).src,
+  full: (await getImage({ src: p.img, width: 1200, format: 'webp', quality: 85 })).src,
 })));
 ---
 
@@ -59,6 +59,14 @@ const paintings = await Promise.all([
     break-inside: avoid;
     margin-bottom: 16px;
   }
+
+  #lb-img {
+    opacity: 0;
+  }
+  #lb-img.lb-loaded {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
 </style>
 
 <!-- Lightbox -->
@@ -84,7 +92,7 @@ const paintings = await Promise.all([
   <div id="lb-spinner" class="hidden absolute inset-0 items-center justify-center pointer-events-none">
     <div class="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
   </div>
-  <img id="lb-img" src="" alt="" class="max-h-[82vh] max-w-[88vw] object-contain select-none transition-opacity duration-300 opacity-0" />
+  <img id="lb-img" src="" alt="" class="max-h-[82vh] max-w-[88vw] object-contain select-none" />
   <div class="text-center mt-4 text-white pointer-events-none">
     <p id="lb-title" class="text-xl"></p>
     <p id="lb-medium" class="text-sm text-gray-300"></p>
@@ -109,37 +117,30 @@ const paintings = await Promise.all([
   const lbCounter = document.getElementById('lb-counter')!;
   let current = 0;
 
-  function preload(i: number) {
-    if (i >= 0 && i < paintings.length) {
-      const img = new Image();
-      img.src = paintings[i].src;
-    }
-  }
+  // preload all images in the background
+  paintings.forEach(p => { const img = new Image(); img.src = p.src; });
 
   lbImg.addEventListener('load', () => {
     lbSpinner.classList.remove('flex');
     lbSpinner.classList.add('hidden');
-    lbImg.style.opacity = '1';
+    lbImg.classList.add('lb-loaded');
   });
 
   function openLightbox(i: number) {
     current = i;
     const p = paintings[i];
-    lbImg.style.transition = 'none';
-    lbImg.style.opacity = '0';
-    requestAnimationFrame(() => { lbImg.style.transition = ''; });
+    lbImg.classList.remove('lb-loaded');
+    lbImg.removeAttribute('src');
     lbSpinner.classList.remove('hidden');
     lbSpinner.classList.add('flex');
-    lbImg.src = p.src;
     lbImg.alt = p.alt;
+    lbImg.src = p.src;
     lbTitle.textContent = p.title;
     lbMedium.textContent = p.medium;
     lbCounter.textContent = `${i + 1} / ${paintings.length}`;
     lb.classList.remove('hidden');
     lb.classList.add('flex');
     document.body.style.overflow = 'hidden';
-    preload(i + 1);
-    preload(i - 1);
   }
 
   function closeLightbox() {
