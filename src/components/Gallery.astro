@@ -85,6 +85,7 @@ const paintings = await Promise.all([
     const imgHeight = (img.naturalHeight / img.naturalWidth) * colWidth;
     const span = Math.ceil((imgHeight + 16) / 10);
     fig.style.gridRow = `span ${span}`;
+    fig.style.opacity = '1';
   }
   function setAllSpans() { figures.forEach(setSpan); }
 
