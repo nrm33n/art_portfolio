@@ -126,6 +126,16 @@ const paintings = await Promise.all(paintingDefs.map(async p => {
   #lb-img {
     opacity: 0;
   }
+
+  @media (max-width: 767px) {
+    /* captions triggered by tap, not hover */
+    .image-figure:hover figcaption { opacity: 0; }
+    .image-figure.caption-visible figcaption { opacity: 1; }
+    /* no hover scale on touch */
+    .image-figure:hover { transform: none; }
+    /* hide lightbox arrows */
+    #lb-prev, #lb-next { display: none; }
+  }
 </style>
 
 <!-- Lightbox -->
@@ -228,8 +238,16 @@ const paintings = await Promise.all(paintingDefs.map(async p => {
   function next() { openLightbox((current + 1) % paintings.length); }
 
   document.getElementById('gallery')!.addEventListener('click', (e) => {
-    const fig = e.target as HTMLElement;
-    if (!fig.classList.contains('image-figure')) return;
+    const fig = (e.target as HTMLElement).closest<HTMLElement>('.image-figure');
+    if (!fig) return;
+
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      const isVisible = fig.classList.contains('caption-visible');
+      figures.forEach(f => f.classList.remove('caption-visible'));
+      if (!isVisible) fig.classList.add('caption-visible');
+      return;
+    }
+
     const i = parseInt(fig.dataset.index ?? '-1', 10);
     if (i !== -1) openLightbox(i);
   });
