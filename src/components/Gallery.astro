@@ -29,7 +29,7 @@ const paintings = await Promise.all([
 })));
 ---
 
-<div class="container mx-auto px-4 py-6 fadeInUp" id="gallery">
+<div class="container mx-auto px-4 py-6" id="gallery">
   {paintings.map((p, i) => (
     <figure class="image-figure" data-index={i} data-full={p.full}>
       <Image
@@ -59,6 +59,22 @@ const paintings = await Promise.all([
   .image-figure {
     break-inside: avoid;
     margin-bottom: 16px;
+  }
+
+  /* gallery image entrance */
+  .image-figure {
+    background: #ece7df;
+  }
+
+  .image-figure img {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .image-figure img.img-visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   #lb-img {
@@ -98,6 +114,14 @@ const paintings = await Promise.all([
 </div>
 
 <script>
+  // staggered entrance: eager images cascade in, lazy images fade when loaded
+  Array.from(document.querySelectorAll<HTMLImageElement>('#gallery .image-figure img')).forEach((img, i) => {
+    const delay = i < 4 ? i * 90 : 0;
+    const reveal = () => setTimeout(() => img.classList.add('img-visible'), delay);
+    if (img.complete && img.naturalWidth > 0) reveal();
+    else img.addEventListener('load', reveal, { once: true });
+  });
+
   const figures = Array.from(document.querySelectorAll<HTMLElement>('#gallery .image-figure'));
 
   const paintings = figures.map(fig => {

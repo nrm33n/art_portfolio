@@ -12,6 +12,10 @@ const {
   title = '✐ᝰ .ᐟ',
   description = 'Art portfolio of Narmeen Zain — painter and sculptor',
 } = Astro.props;
+
+const site = Astro.site!.href.replace(/\/$/, '');
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = `${site}/sculpture.jpg`;
 ---
 
 <!doctype html>
@@ -20,16 +24,35 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <link rel="canonical" href={new URL(Astro.url.pathname, 'https://narmeenzain.com').href} />
+    <link rel="canonical" href={pageUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={new URL(Astro.url.pathname, 'https://narmeenzain.com').href} />
-    <meta property="og:image" content="https://narmeenzain.com/sculpture.jpg" />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://narmeenzain.com/sculpture.jpg" />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="author" content="Narmeen Zain" />
     <link rel="icon" type="image/png" href="/icon.png" />
     <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "name": "Narmeen Zain",
+          "url": site,
+          "jobTitle": "Artist",
+          "description": "Oil painter and sculptor",
+          "knowsAbout": ["oil painting", "acrylic painting", "sculpture"]
+        },
+        {
+          "@type": "WebSite",
+          "name": "Narmeen Zain",
+          "url": site
+        }
+      ]
+    })} />
   </head>
   <body>
     <Navbar />
