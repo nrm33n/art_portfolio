@@ -1,5 +1,8 @@
 ---
 import { Image, getImage } from 'astro:assets';
+import sharp from 'sharp';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
 
 import Luka from '../images/paintings/Luka.jpeg';
 import ManWithAntlers from '../images/paintings/Man_with_Antlers.jpeg';
@@ -12,26 +15,45 @@ import ThreeHeads from '../images/paintings/Three_Heads.jpg';
 import BITE from '../images/paintings/BITE.jpeg';
 import WomaninRed from '../images/paintings/Woman_in_Red.jpeg';
 
-const paintings = await Promise.all([
-  { img: Luka,              alt: 'A portrait of a black cat wearing a Victorian-era coat', title: 'Luka',               medium: 'oil on canvas, 50x60cm' },
-  { img: ManWithAntlers,   alt: 'Man with Antlers',                                       title: 'Man with Antlers',   medium: 'acrylic on canvas, 65x85cm' },
-  { img: ShrikeWithFruits, alt: 'A painting of a shrike in a teacup',                    title: 'Shrike with Fruits', medium: 'oil on canvas, 50x60cm' },
-  { img: GirlWithSkateboard, alt: 'Girl with skateboard',                                 title: 'Girl with Skateboard', medium: 'oil on canvas, 60x70cm' },
-  { img: WomaninRed,       alt: 'Woman wearing red',                                      title: 'Woman in Red',       medium: 'oil on canvas, 40x50cm' },
-  { img: RedUmbrella,      alt: 'A painting of a woman with a red umbrella',              title: 'Red Umbrella',       medium: 'oil on canvas, 40x30cm' },
-  { img: BITE,             alt: 'A painting of dog mouths',                               title: 'BITE',               medium: 'oil on canvas, 40x50cm' },
-  { img: ThreeHeads,       alt: 'A painting of three heads',                              title: 'Three Heads',        medium: 'acrylic on canvas, 50x75cm' },
-  { img: ManWithHarmonica, alt: 'A man sitting down playing a harmonica',                 title: 'Man with Harmonica', medium: 'acrylic on canvas, 45x60cm' },
-  { img: ManWithSaxophone, alt: 'A portrait of a man playing a saxophone',                title: 'Man with Saxophone', medium: 'acrylic on canvas, 45x60cm' },
-].map(async p => ({
-  ...p,
-  full: (await getImage({ src: p.img, width: 1200, format: 'webp', quality: 85 })).src,
-})));
+const __dir = dirname(fileURLToPath(import.meta.url));
+
+const paintingDefs = [
+  { img: Luka,              file: 'Luka.jpeg',              alt: 'A portrait of a black cat wearing a Victorian-era coat', title: 'Luka',               medium: 'oil on canvas, 50x60cm' },
+  { img: ManWithAntlers,    file: 'Man_with_Antlers.jpeg',  alt: 'Man with Antlers',                                       title: 'Man with Antlers',   medium: 'acrylic on canvas, 65x85cm' },
+  { img: ShrikeWithFruits,  file: 'Shrike_with_Fruits.jpeg',alt: 'A painting of a shrike in a teacup',                    title: 'Shrike with Fruits', medium: 'oil on canvas, 50x60cm' },
+  { img: GirlWithSkateboard,file: 'Girl_with_Skateboard.jpeg',alt: 'Girl with skateboard',                                title: 'Girl with Skateboard', medium: 'oil on canvas, 60x70cm' },
+  { img: WomaninRed,        file: 'Woman_in_Red.jpeg',      alt: 'Woman wearing red',                                      title: 'Woman in Red',       medium: 'oil on canvas, 40x50cm' },
+  { img: RedUmbrella,       file: 'Red_Umbrella.jpeg',      alt: 'A painting of a woman with a red umbrella',              title: 'Red Umbrella',       medium: 'oil on canvas, 40x30cm' },
+  { img: BITE,              file: 'BITE.jpeg',              alt: 'A painting of dog mouths',                               title: 'BITE',               medium: 'oil on canvas, 40x50cm' },
+  { img: ThreeHeads,        file: 'Three_Heads.jpg',        alt: 'A painting of three heads',                              title: 'Three Heads',        medium: 'acrylic on canvas, 50x75cm' },
+  { img: ManWithHarmonica,  file: 'Man_with_Harmonica.jpg', alt: 'A man sitting down playing a harmonica',                 title: 'Man with Harmonica', medium: 'acrylic on canvas, 45x60cm' },
+  { img: ManWithSaxophone,  file: 'Man_with_Saxophone.jpeg',alt: 'A portrait of a man playing a saxophone',                title: 'Man with Saxophone', medium: 'acrylic on canvas, 45x60cm' },
+];
+
+const paintings = await Promise.all(paintingDefs.map(async p => {
+  const [fullImg, lqipBuf] = await Promise.all([
+    getImage({ src: p.img, width: 1200, format: 'webp', quality: 85 }),
+    sharp(resolve(__dir, '../images/paintings', p.file))
+      .resize(20)
+      .webp({ quality: 20 })
+      .toBuffer(),
+  ]);
+  return {
+    ...p,
+    full: fullImg.src,
+    lqip: `data:image/webp;base64,${lqipBuf.toString('base64')}`,
+  };
+}));
 ---
 
 <div class="container mx-auto px-4 py-6" id="gallery">
   {paintings.map((p, i) => (
-    <figure class="image-figure" data-index={i} data-full={p.full}>
+    <figure
+      class="image-figure"
+      data-index={i}
+      data-full={p.full}
+      style={`--lqip: url('${p.lqip}')`}
+    >
       <Image
         src={p.img}
         alt={p.alt}
@@ -59,22 +81,46 @@ const paintings = await Promise.all([
   .image-figure {
     break-inside: avoid;
     margin-bottom: 16px;
+    overflow: hidden;
   }
 
-  /* gallery image entrance */
+  /* blurred LQIP shown while full image loads */
+  .image-figure::before {
+    content: '';
+    position: absolute;
+    inset: -15px;
+    background-image: var(--lqip);
+    background-size: cover;
+    background-position: center;
+    filter: blur(12px);
+    opacity: 1;
+    transition: opacity 0.4s ease 0.2s;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .image-figure.img-loaded::before {
+    opacity: 0;
+  }
+
   .image-figure {
-    background: #ece7df;
+    transition: transform 0.4s ease, z-index 0s;
+  }
+
+  .image-figure:hover {
+    transform: scale(1.05);
+    z-index: 2;
   }
 
   .image-figure img {
+    position: relative;
+    z-index: 1;
     opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition: opacity 0.6s ease;
   }
 
   .image-figure img.img-visible {
     opacity: 1;
-    transform: translateY(0);
   }
 
   #lb-img {
@@ -114,10 +160,14 @@ const paintings = await Promise.all([
 </div>
 
 <script>
-  // staggered entrance: eager images cascade in, lazy images fade when loaded
+  // staggered blur-up reveal: eager images cascade in, lazy images reveal when loaded
   Array.from(document.querySelectorAll<HTMLImageElement>('#gallery .image-figure img')).forEach((img, i) => {
+    const fig = img.closest<HTMLElement>('.image-figure')!;
     const delay = i < 4 ? i * 90 : 0;
-    const reveal = () => setTimeout(() => img.classList.add('img-visible'), delay);
+    const reveal = () => setTimeout(() => {
+      img.classList.add('img-visible');
+      fig.classList.add('img-loaded');
+    }, delay);
     if (img.complete && img.naturalWidth > 0) reveal();
     else img.addEventListener('load', reveal, { once: true });
   });
@@ -145,7 +195,7 @@ const paintings = await Promise.all([
     lbSpinner.classList.remove('flex');
     lbSpinner.classList.add('hidden');
     lbImg.style.transition = 'opacity 0.3s ease';
-    void lbImg.offsetWidth; // force reflow so transition takes effect
+    void lbImg.offsetWidth;
     lbImg.style.opacity = '1';
   });
 
@@ -153,7 +203,7 @@ const paintings = await Promise.all([
     current = i;
     const p = paintings[i];
     lbImg.style.transition = 'none';
-    void lbImg.offsetWidth; // commit transition:none before changing opacity
+    void lbImg.offsetWidth;
     lbImg.style.opacity = '0';
     lbImg.removeAttribute('src');
     lbSpinner.classList.remove('hidden');
