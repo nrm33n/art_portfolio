@@ -89,8 +89,10 @@ body {
   width: 100%;
 }
 
-.image-figure:hover {
-  filter: brightness(0.92);
+@media (hover: hover) and (pointer: fine) and (min-width: 640px) {
+  .image-figure:hover {
+    filter: brightness(0.92);
+  }
 }
 
 .image-figure figcaption {
@@ -107,7 +109,9 @@ body {
   transition: opacity 0.2s ease;
 }
 
-.image-figure:hover figcaption { opacity: 1; }
+@media (hover: hover) and (pointer: fine) and (min-width: 640px) {
+  .image-figure:hover figcaption { opacity: 1; }
+}
 
 /* page animations */
 .fadeInDown {

@@ -103,13 +103,15 @@ const paintings = await Promise.all(paintingDefs.map(async p => {
     opacity: 0;
   }
 
-  .image-figure {
-    transition: transform 0.4s ease, z-index 0s;
-  }
-
-  .image-figure:hover {
-    transform: scale(1.05);
-    z-index: 2;
+  @media (hover: hover) and (pointer: fine) and (min-width: 640px) {
+    .image-figure {
+      transition: transform 0.4s ease;
+    }
+    .image-figure:hover {
+      transform: scale(1.06);
+      z-index: 2;
+      overflow: visible;
+    }
   }
 
   .image-figure img {
@@ -131,8 +133,6 @@ const paintings = await Promise.all(paintingDefs.map(async p => {
     /* captions triggered by tap, not hover */
     .image-figure:hover figcaption { opacity: 0; }
     .image-figure.caption-visible figcaption { opacity: 1; }
-    /* no hover scale on touch */
-    .image-figure:hover { transform: none; }
     /* hide lightbox arrows */
     #lb-prev, #lb-next { display: none; }
   }
