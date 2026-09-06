@@ -1,9 +1,9 @@
 ---
 import { Image, getImage } from 'astro:assets';
 import sharp from 'sharp';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
+import { resolve } from 'node:path';
 
+import Ahmad from '../images/paintings/Ahmad.jpeg';
 import Luka from '../images/paintings/Luka.jpeg';
 import ManWithAntlers from '../images/paintings/Man_with_Antlers.jpeg';
 import GirlWithSkateboard from '../images/paintings/Girl_with_Skateboard.jpeg';
@@ -15,9 +15,10 @@ import ThreeHeads from '../images/paintings/Three_Heads.jpg';
 import BITE from '../images/paintings/BITE.jpeg';
 import WomaninRed from '../images/paintings/Woman_in_Red.jpeg';
 
-const __dir = dirname(fileURLToPath(import.meta.url));
+const paintingsDir = resolve(process.cwd(), 'src/images/paintings');
 
 const paintingDefs = [
+  { img: Ahmad,             file: 'Ahmad.jpeg',             alt: 'Ahmad',                                                  title: 'Ahmad',              medium: 'oil on canvas, 50x40cm' },
   { img: Luka,              file: 'Luka.jpeg',              alt: 'A portrait of a black cat wearing a Victorian-era coat', title: 'Luka',               medium: 'oil on canvas, 50x60cm' },
   { img: ManWithAntlers,    file: 'Man_with_Antlers.jpeg',  alt: 'Man with Antlers',                                       title: 'Man with Antlers',   medium: 'acrylic on canvas, 65x85cm' },
   { img: ShrikeWithFruits,  file: 'Shrike_with_Fruits.jpeg',alt: 'A painting of a shrike in a teacup',                    title: 'Shrike with Fruits', medium: 'oil on canvas, 50x60cm' },
@@ -33,7 +34,7 @@ const paintingDefs = [
 const paintings = await Promise.all(paintingDefs.map(async p => {
   const [fullImg, lqipBuf] = await Promise.all([
     getImage({ src: p.img, width: 1200, format: 'webp', quality: 85 }),
-    sharp(resolve(__dir, '../images/paintings', p.file))
+    sharp(resolve(paintingsDir, p.file))
       .resize(20)
       .webp({ quality: 20 })
       .toBuffer(),
